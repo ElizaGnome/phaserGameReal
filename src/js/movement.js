@@ -1,4 +1,6 @@
 // movement.js
+import { showDialogue } from '../ui/chickenInventoryWindow.js';
+
 export function handleMovement(scene, speed, runSpeed) {
     let facingDirection = 2;
 
@@ -69,11 +71,45 @@ export function moveBackground(scene,  speed) {
             scene.exterior.x = 0;
         }
     }
-    
-
 }
 
+//show the E for interaction around the item
+export function interactionArea(scene,staticGroup){
 
 
+    const listedItems = staticGroup.getChildren();
+   
+
+    for (let i = 0; i < listedItems.length; i++){
+
+        let item = listedItems[i];
+
+        if(Phaser.Math.Distance.Between(scene.character.x,scene.character.y, item.x, item.y) < 50)
+        {
+      
+            item.setTint(0xff0000);
+            
+
+            scene.keyE.on('down',() => {
+                console.log('Player interacted with item');
+                    if (!item.firstInteraction) {
+                        item.firstInteraction = true;
+                        showDialogue(scene, item);
+                    }
+
+                // Add your interaction logic here
+
+                item.clearTint();
+            });
+
+
+
+            
+        
+
+        }
+
+    }
+}
 
 

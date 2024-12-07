@@ -1,7 +1,12 @@
 import MainScene from '../scenes/mainScene.js';
+import StartScene from '../scenes/startScene.js';
+import MenuScene from '../scenes/menuScene.js';
 import Phaser from 'phaser';
+import DeathScene from '../scenes/deathScene.js';
+import JournalOverlayScene from '../scenes/overlayScene.js';
 
 export const gameConfig = {
+
     type: Phaser.AUTO,
     width: 1024,
     height: 576,
@@ -12,5 +17,5 @@ export const gameConfig = {
             debug: true
         }
     },
-    scene: [ MainScene ]
+    scene: [StartScene,MenuScene, MainScene, DeathScene, JournalOverlayScene]
 };

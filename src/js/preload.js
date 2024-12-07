@@ -13,9 +13,14 @@ export function preload() {
     this.load.image("ground",'assets/ground.png');
     this.load.image('enemy', 'assets/placeholder_enemy.png',{frameWidth:104, frameHeight: 192});
     this.load.image('steam', 'assets/steam.png');
-    //this.load.image('rack', 'assets/rack.png');
+    this.load.image('rack', 'assets/staticPlatforms.png');
     this.load.image('platform', 'assets/lugagePlatform.png');
-
-
-
+    this.load.image('inv', 'assets/inv.png');
+   
+    
 }
+
+export function preloadMain(){
+    this.load.audio('mainMusic', 'assets/main_music.mp3');
+
+};

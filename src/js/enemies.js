@@ -19,8 +19,6 @@ export function initalizeEnemy(enemy, config) {
 
 function throwItem(enemy,scene){
 
-    
-   
 
     if (scene.character.x < enemy.patrolArea.end && enemy.faceDirection ===0
          || scene.character.x > enemy.patrolArea.start && enemy.faceDirection ===1 ) {
@@ -31,14 +29,14 @@ function throwItem(enemy,scene){
 
 
         //change this to the real item later -currently placeholder
-        const items = scene.throw.create(enemy.x, enemy.y, 'egg');
-        items.body.allowGravity = false;
+        const thrown = scene.throw.create(enemy.x, enemy.y, 'egg');
+        thrown.body.allowGravity = false;
 
-        scene.physics.moveTo(items, scene.character.x, scene.character.y, 200);
+        scene.physics.moveTo(thrown, scene.character.x, scene.character.y, 200);
 
         //delay destroy, but you want it to destroy
     
-        scene.time.delayedCall(3000, ()=> items.destroy());
+       scene.time.delayedCall(3000, ()=> thrown.destroy());
         scene.time.delayedCall(2000, ()=> (enemy.throwCooldown = false));
     }
 }

@@ -1,12 +1,10 @@
-import { activateSteam } from '../js/collision.js';
+//import { activateSteam } from '../js/collision.js';
 
 export function movingUp(scene) {
     scene.physics.add.collider(
         scene.character, // The character sprite
         scene.platform,  // The moving platform
-        (sprite, platform) => collisionMovingPlatform(sprite, platform, scene), // Pass scene to collision callback
-        (sprite, platform) => isCollisionFromTop(sprite, platform, scene), // Pass scene to filter callback
-        scene // The scene object
+        // The scene object
     );
 
     // Allow gravity for t he character so it falls when off the platform
@@ -20,12 +18,14 @@ export function movingUp(scene) {
 
         // Move the platform up manually
         scene.platform.y -= 2; // Move up
-        scene.platform.setPosition(scene.platform.x, scene.platform.y); // Update the physics body position
+        scene.platform.setPosition(scene.platform.x, scene.platform.y);
+         // Update the physics body position
 
         // Stop moving up once it reaches the top limit
         if (scene.platform.y <= 200) {
             scene.platform.y = 200; // Clamp to top limit
             scene.platform.setPosition(scene.platform.x, scene.platform.y); // Update the physics body position
+            scene.platform.body.updateFromGameObject();
             scene.platformMovingUp = false; // Stop upward movement
            
         }
@@ -44,7 +44,8 @@ export function movingUp(scene) {
         // Stop falling once it reaches the bottom limit
         if (scene.platform.y >= 500) {
             scene.platform.y = 500; // Clamp to bottom limit
-            scene.platform.setPosition(scene.platform.x, scene.platform.y); // Update the physics body position
+            scene.platform.setPosition(scene.platform.x, scene.platform.y);
+            scene.platform.body.updateFromGameObject(); // Update the physics body position
             console.log('restart scene')
             activateSteam(scene); // Restart the cycle
         }
