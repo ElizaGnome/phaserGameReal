@@ -1,13 +1,5 @@
 
-
-export function showDialogue(scene, item){
-
-    if(item.name === 'leaver'){
-        console.log('LEAVER')
-        //call dialogue sequence 
-    }
-
-}
+//this is the initial dialogue sequence 
 
 
 export function healthStats(scene){

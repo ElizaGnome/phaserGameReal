@@ -34,18 +34,14 @@ export default class MainScene extends Phaser.Scene {
         const background = this.add.image(1024, 288, 'background');
         background.setOrigin(0.5, 0.5);
         background.setScale(2,2);
-        this.eggText = this.add.text(16, 16, 'Eggs: 0', {
-            fontSize: '30px',
-            fill: '#fff',
-            fontStyle: 'bold'
-        });
+    
         this.cameras.main.setBounds(0, 0, background.width * background.scaleX, background.height * background.scaleY);
         //update the bounds as the player moves for the world based on scaling
         this.physics.world.setBounds(0, 0, background.width * background.scaleX, background.height * background.scaleY);
 
         
         
-          //interactable
+          //interactable - needs to be changed to actual lever
           this.interactiveItem = this.physics.add.staticGroup();
           const lever = this.interactiveItem.create(50, 400, 'egg');
           lever.firstInteraction = false;
@@ -90,6 +86,11 @@ export default class MainScene extends Phaser.Scene {
         this.eggs = this.physics.add.staticGroup();
         this.eggs.create(200, 504, 'egg').setName('eggs_brown');
         this.eggs.create(400, 504, 'egg').setName('eggs_brown');
+        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
+        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
+        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
+        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
+        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
         this.eggs.create(600, 504, 'egg').setName('eggs_golden');
 
         //avoidable 
@@ -195,6 +196,11 @@ export default class MainScene extends Phaser.Scene {
 
         this.facingDirection = handleMovement(this, 200, 400);
         this.facingDirection = handleJumping(this, -250, 340);
+        console.log('COUNTER ', this.eggCounter);
+        if(this.eggCounter === 8){
+            this.eggs.create(900,504, 'egg').setName('valve');
+            this.eggCounter =0; 
+        }
     }
 
 

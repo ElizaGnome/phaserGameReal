@@ -1,5 +1,5 @@
 // movement.js
-import { showDialogue } from '../ui/chickenInventoryWindow.js';
+
 
 export function handleMovement(scene, speed, runSpeed) {
     let facingDirection = 2;
@@ -72,9 +72,11 @@ export function moveBackground(scene,  speed) {
         }
     }
 }
-
+//check the inventory to see if user has the required item, if user has required item prompt use 
+//if item used, then remove item from inventory.
 //show the E for interaction around the item
 export function interactionArea(scene,staticGroup){
+
 
 
     const listedItems = staticGroup.getChildren();
@@ -84,32 +86,63 @@ export function interactionArea(scene,staticGroup){
 
         let item = listedItems[i];
 
-        if(Phaser.Math.Distance.Between(scene.character.x,scene.character.y, item.x, item.y) < 50)
+        if(Phaser.Math.Distance.Between(scene.character.x,scene.character.y, item.x, item.y) < 55)
         {
       
             item.setTint(0xff0000);
-            
-
-            scene.keyE.on('down',() => {
-                console.log('Player interacted with item');
-                    if (!item.firstInteraction) {
-                        item.firstInteraction = true;
-                        showDialogue(scene, item);
-                    }
-
-                // Add your interaction logic here
-
-                item.clearTint();
-            });
-
-
-
-            
         
+            if (!item.firstInteraction) {
+                item.firstInteraction = true;
+                scene.scene.launch('DialogueOverlayScene', { item: item }); 
+                scene.scene.pause();
+        
+            }
+            else if (scene.inventory.equippable.valve){
+                const promptText = scene.add.text(item.x, item.y - 50, 'Press E to use Valve', { fill: '#fff'})
+                scene.keyE.once('down',() => {
+                    //use valve function should be called here
+                    console.log('Player interacted with item');
+                    useValve(scene, item);
+                    promptText.destroy();
+                    item.clearTint();
+                });
+
+             }
 
         }
+        else{
+                item.clearTint();
+            }
+        
 
     }
+
 }
+//i need an action that occurs once the useValve is initated 
+function useValve(scene, item){
+
+    scene.inventory.equippable.valve = false;
+    scene.data.set('inventory', scene.inventory);
+    console.log('wooo valve used');
+
+//shut off steam / call animation
+    if (scene.emitter) 
+        { 
+          scene.emitter.stop();
+          //scene.physics.world.removeCollider(scene.steamZoneCollider);
+          scene.physics.world.removeCollider(scene.steamZoneCollider)
+          scene.steamZone.destroy();
+
+          //this is the problem
+          scene.door.active = true;
+          scene.door.setVisible(true);
+          console.log(scene.door);
+
+         } 
+
+
+
+}
+
 
 

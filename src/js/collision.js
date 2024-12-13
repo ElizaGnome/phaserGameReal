@@ -20,6 +20,7 @@ function inventoryUpdator(itemName, scene){
     const itemHandler = {
         eggs: (collectables) => {
             const type = itemName.toString().split('_')[1];
+            scene.eggCounter++;
             if (type === 'brown') collectables.eggs.brown += 1;
             else if (type === 'white') collectables.eggs.white += 1;
             else if (type === 'golden') collectables.eggs.golden += 1;
@@ -176,8 +177,9 @@ export function setUpSteam(scene){
     
     scene.physics.add.existing(steamZone, false);
     steamZone.body.moves = false;
+    scene.steamZone = steamZone;
 
-    scene.physics.add.overlap(
+    const steamZoneCollider= scene.physics.add.overlap(
         scene.character, 
         steamZone, 
         ()=>{
@@ -186,10 +188,16 @@ export function setUpSteam(scene){
         null,
         scene
     );
+
+    scene.steamZoneCollider = steamZoneCollider;
   
 
     const platform = scene.physics.add.image(1100,500, 'platform').setScale(1.5).setDirectControl().setImmovable();
-    scene.physics.add.collider(scene.character, platform);
+    platform.body.allowGravity = false
+    scene.physics.add.collider(scene.character, platform, (character, platform) => { if (character.body.touching.down && platform.body.touching.up) { 
+        character.setVelocityY(-10);
+        scene.health = 0;
+}});
 
     scene.tweens.chain({
         targets: platform,
@@ -210,7 +218,27 @@ export function setUpSteam(scene){
     scene.emitter = emitter;
     scene.platform = platform;
 
+    const door = scene.physics.add.image(2040, 520, 'door').setInteractive(); 
+    door.setOrigin(0.5, 1); 
+    door.body.allowGravity = false;
+    door.setImmovable(true); 
+    door.setDepth(10); 
+    door.setVisible(false);
+    door.active = false; 
 
+    
+    scene.door = door;
+    
 
+    scene.door = door;
+    scene.physics.add.overlap(scene.character, door, () => { 
+        console.log('doorinteraction', door.active);
+        if (door.active) { 
+             scene.scene.start('NextLocationScene'); 
+            } 
+        },
+         null, 
+         scene);
+    
 };
 

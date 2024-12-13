@@ -4,6 +4,8 @@ import MenuScene from '../scenes/menuScene.js';
 import Phaser from 'phaser';
 import DeathScene from '../scenes/deathScene.js';
 import JournalOverlayScene from '../scenes/overlayScene.js';
+import DialogueOverlayScene from '../scenes/dialogueSection.js'
+import NextLocationScene from '../scenes/nextLocationScene.js';
 
 export const gameConfig = {
 
@@ -17,5 +19,12 @@ export const gameConfig = {
             debug: true
         }
     },
-    scene: [StartScene,MenuScene, MainScene, DeathScene, JournalOverlayScene]
+    scene: [StartScene,
+            MenuScene, 
+            MainScene, 
+            DeathScene, 
+            JournalOverlayScene,
+            DialogueOverlayScene,
+            NextLocationScene
+        ]
 };

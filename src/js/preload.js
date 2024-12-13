@@ -16,6 +16,7 @@ export function preload() {
     this.load.image('rack', 'assets/staticPlatforms.png');
     this.load.image('platform', 'assets/lugagePlatform.png');
     this.load.image('inv', 'assets/inv.png');
+    this.load.image('door', 'assets/door_sprite.png');
    
     
 }
