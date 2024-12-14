@@ -72,10 +72,21 @@ export default class StartScene extends Phaser.Scene {
     }
 
     create() {
+
+       
+
+
+
+
+
+
+
         this.music = this.sound.play('mainMusic',{loop: true});
         const logo= this.add.image(this.sys.game.config.width /2, this.sys.game.config.height/2, 'logo');
         logo.setScale(0.5);
         this.logo =logo;
+
+        
 
 
         if (logo) {

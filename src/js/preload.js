@@ -9,7 +9,13 @@ export function preload() {
     this.load.spritesheet('characterJumpLeft', 'assets/left_jump_sprite_sheet.png', { frameWidth: 64, frameHeight: 70 });
     this.load.spritesheet('characterRunLeft', 'assets/left_run_sprite_sheet.png', { frameWidth: 70, frameHeight: 70 });
     this.load.spritesheet('characterRunRight', 'assets/run_sprite_sheet.png', { frameWidth: 70, frameHeight: 70 });
-    this.load.image('egg', 'assets/place_holder.png');
+    this.load.image('eggBrown', 'assets/brown_egg.png');
+    this.load.image('eggGold', 'assets/gold_egg.png');
+    this.load.image('eggGreen', 'assets/green_egg.png');
+    this.load.image('eggWhite', 'assets/white_egg.png');
+    this.load.image('valveDrop', 'assets/valve_drop.png');
+    this.load.image('valveArea', 'assets/interactive_valve_area.png')
+    this.load.image('valveLayer', 'assets/valve_layer.png')
     this.load.image("ground",'assets/ground.png');
     this.load.image('enemy', 'assets/placeholder_enemy.png',{frameWidth:104, frameHeight: 192});
     this.load.image('steam', 'assets/steam.png');

@@ -12,6 +12,8 @@ export const gameConfig = {
     type: Phaser.AUTO,
     width: 1024,
     height: 576,
+    parent: 'game-container',
+    dom: {createContainer: true},
     physics: {
         default: 'arcade',
         arcade: {

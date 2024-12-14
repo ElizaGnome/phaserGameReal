@@ -63,6 +63,7 @@ export default class JournalOverlayScene extends Phaser.Scene {
         container.add(this.add.text(startX, startY, `Brown Eggs: ${inventory.collectables.eggs.brown}`, { fill: '#fff' }));
         container.add(this.add.text(startX, startY + lineHeight, `White Eggs: ${inventory.collectables.eggs.white}`, { fill: '#fff' })); 
         container.add(this.add.text(startX, startY + 2 * lineHeight, `Golden Eggs: ${inventory.collectables.eggs.golden}`, { fill: '#fff' }));
-        container.add(this.add.text(startX, startY + 4 * lineHeight, `Valve?: ${inventory.equippable.valve}`, { fill: '#fff' }));
+        container.add(this.add.text(startX, startY + 3* lineHeight, `Saphire Eggs: ${inventory.collectables.eggs.saphire}`, { fill: '#fff' }));
+        container.add(this.add.text(startX, startY + 6 * lineHeight, `Valve: ${inventory.equippable.valve}`, { fill: '#fff' }));
     }
 }

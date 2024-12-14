@@ -24,6 +24,7 @@ function inventoryUpdator(itemName, scene){
             if (type === 'brown') collectables.eggs.brown += 1;
             else if (type === 'white') collectables.eggs.white += 1;
             else if (type === 'golden') collectables.eggs.golden += 1;
+            else if (type === 'saphire') collectables.eggs.saphire += 1;
           },
           posters: (collectables) => {
             const type = itemName.toString().split('_')[1];

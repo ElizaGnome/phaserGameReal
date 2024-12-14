@@ -24,7 +24,8 @@ return{
         eggs: {
             brown: 0,
             white: 0,
-            golden: 0 // Example of a different type of egg
+            golden: 0,
+            saphire:0,
         },
         posters: {
             chickenRecipe: 0,

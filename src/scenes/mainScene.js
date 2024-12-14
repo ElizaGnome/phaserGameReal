@@ -39,13 +39,17 @@ export default class MainScene extends Phaser.Scene {
         //update the bounds as the player moves for the world based on scaling
         this.physics.world.setBounds(0, 0, background.width * background.scaleX, background.height * background.scaleY);
 
+       
+
         
         
           //interactable - needs to be changed to actual lever
           this.interactiveItem = this.physics.add.staticGroup();
-          const lever = this.interactiveItem.create(50, 400, 'egg');
+          const lever = this.interactiveItem.create(48, 444, 'valveArea').setScale(2.4);
           lever.firstInteraction = false;
           lever.name = 'leaver';
+
+          this.valveLayer = this.add.image(48, 444,'valveLayer').setScale(2).setVisible(false);
 
 
 
@@ -84,14 +88,15 @@ export default class MainScene extends Phaser.Scene {
         //collectable 
 
         this.eggs = this.physics.add.staticGroup();
-        this.eggs.create(200, 504, 'egg').setName('eggs_brown');
-        this.eggs.create(400, 504, 'egg').setName('eggs_brown');
-        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
-        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
-        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
-        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
-        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
-        this.eggs.create(600, 504, 'egg').setName('eggs_golden');
+        this.eggs.create(200, 504, 'eggBrown').setName('eggs_brown');
+        this.eggs.create(400, 504, 'eggBrown').setName('eggs_brown');
+        this.eggs.create(1600, 118, 'eggGold').setName('eggs_golden');
+        this.eggs.create(900, 118, 'eggGold').setName('eggs_golden');
+        this.eggs.create(600, 504, 'eggWhite').setName('eggs_white');
+        this.eggs.create(1400, 178, 'eggGreen').setName('eggs_saphire');
+        this.eggs.create(600, 504, 'eggWhite').setName('eggs_white');
+        this.eggs.create(1800, 504, 'eggWhite').setName('eggs_white');
+
 
         //avoidable 
 
@@ -198,7 +203,7 @@ export default class MainScene extends Phaser.Scene {
         this.facingDirection = handleJumping(this, -250, 340);
         console.log('COUNTER ', this.eggCounter);
         if(this.eggCounter === 8){
-            this.eggs.create(900,504, 'egg').setName('valve');
+            this.eggs.create(900,504, 'valveDrop').setName('valve');
             this.eggCounter =0; 
         }
     }

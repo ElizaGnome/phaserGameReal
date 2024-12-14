@@ -121,7 +121,9 @@ export function interactionArea(scene,staticGroup){
 //i need an action that occurs once the useValve is initated 
 function useValve(scene, item){
 
+
     scene.inventory.equippable.valve = false;
+    scene.valveLayer.setVisible(true);
     scene.data.set('inventory', scene.inventory);
     console.log('wooo valve used');
 
