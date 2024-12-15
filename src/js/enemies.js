@@ -21,7 +21,7 @@ function throwItem(enemy,scene){
 
 
     if (scene.character.x < enemy.patrolArea.end && enemy.faceDirection ===0
-         || scene.character.x > enemy.patrolArea.start && enemy.faceDirection ===1 ) {
+         || scene.character.x > enemy.patrolArea.start && enemy.faceDirection ===1) {
 
         
         enemy.throwCooldown = true; 
@@ -48,12 +48,14 @@ export function enemyPatrol(scene,delta){
     if (scene.enemy.x <= scene.enemy.patrolArea.start){
         scene.direction =1;
         scene.enemy.faceDirection = 1;
+        scene.enemy.setFlipX(true);
 
 
     }
     else if (scene.enemy.x > scene.enemy.patrolArea.end){
         scene.direction =-1;
         scene.enemy.faceDirection =0;
+        scene.enemy.setFlipX(false);
     }
 
     //we want the speed of motion to be the same

@@ -67,6 +67,48 @@ function inventoryUpdator(itemName, scene){
 
 
 }
+//this is all the data 
+//counting sessions
+function onPlayerEnd(scene){
+    //send duration, send deaths, send egg counting
+    //add the number of deaths to the db.
+    //deaths +1 
+    const sessionEndTime = Data.now(); 
+    const sessionDuration = (sessionEndTime - scene.sessionStartTime) / 1000;
+    console.log('Session duration:', sessionDuration, 'seconds');
+
+    // update data by user 
+    //change the url when pushed live
+    //maybe we should also send the type of egg and valve?
+    fetch( 'https--something', 
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: storedUserId,
+                deathCount: 1,
+                playCount: 1,
+                eggsCollected: scene.eggCounter,
+                sessionDuration: sessionDuration,
+                damageTaken: scene.health,
+                openedInventory: scene.openedInventory,
+                inventory: scene.inventory,
+            })
+        }
+    )
+    .then(response => response.json())
+    .then(data=>
+        {
+            console.log('data be updateds',data);
+
+    })
+    .catch(error =>
+    {
+        console.error('error people', error);
+    });
+}
 
 
 
@@ -76,6 +118,7 @@ export function damageTaken(scene,damageAmount){
 
     scene.health -=damageAmount;
     if(scene.health <=0){
+        onPlayerEnd(scene);
 
         scene.scene.start('DeathScene');
 
@@ -195,10 +238,14 @@ export function setUpSteam(scene){
 
     const platform = scene.physics.add.image(1100,500, 'platform').setScale(1.5).setDirectControl().setImmovable();
     platform.body.allowGravity = false
-    scene.physics.add.collider(scene.character, platform, (character, platform) => { if (character.body.touching.down && platform.body.touching.up) { 
-        character.setVelocityY(-10);
-        scene.health = 0;
-}});
+    let playerIsBelow = false; 
+    // Collider to ensure character can stand on the platform
+     scene.physics.add.collider(scene.character, platform, (character, platform) => 
+        { if (!playerIsBelow && character.body.touching.down && platform.body.touching.up) { character.setVelocityY(platform.body.velocity.y); } });
+     scene.physics.add.overlap(scene.character, platform, (character, platform) => { if (character.y > platform.y && character.body.touching.down) { playerIsBelow = true; 
+       platform.body.checkCollision.down = false; } else { playerIsBelow = false; 
+         platform.body.checkCollision.down = true; 
+        } });
 
     scene.tweens.chain({
         targets: platform,
@@ -235,6 +282,7 @@ export function setUpSteam(scene){
     scene.physics.add.overlap(scene.character, door, () => { 
         console.log('doorinteraction', door.active);
         if (door.active) { 
+            onPlayerEnd(scene);
              scene.scene.start('NextLocationScene'); 
             } 
         },

@@ -8,6 +8,8 @@ import {healthStats, setInventory} from '../ui/chickenInventoryWindow.js';
 export default class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' });
+        this.sessionStartTime = Date.now();
+        this.openedInventory = 0; 
     }
 
    
@@ -200,7 +202,7 @@ export default class MainScene extends Phaser.Scene {
        
 
         this.facingDirection = handleMovement(this, 200, 400);
-        this.facingDirection = handleJumping(this, -250, 340);
+        this.facingDirection = handleJumping(this, -300, 340);
         console.log('COUNTER ', this.eggCounter);
         if(this.eggCounter === 8){
             this.eggs.create(900,504, 'valveDrop').setName('valve');
@@ -210,6 +212,8 @@ export default class MainScene extends Phaser.Scene {
 
 
     toggleInventory() {
+
+            this.openedInventory +-1;
         
             this.scene.pause(); // Pause the main game scene
             this.scene.launch('JournalOverlayScene'); // Open the overlay

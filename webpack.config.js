@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
@@ -12,8 +13,14 @@ module.exports = {
   devServer: {
     static: path.join(__dirname, 'dist'), // Replace contentBase with static
     compress: true,
-    port: 9000,
-    open: true,  // Optionally opens the browser automatically
+    port: 443,
+    allowedHosts: ['.chickenegghunt.site'],
+    server:{type: 'https',
+      options: {
+       key: fs.readFileSync('./ssl/key.pem'),
+       cert: fs.readFileSync('./ssl/cert.pem') 
+      }
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
