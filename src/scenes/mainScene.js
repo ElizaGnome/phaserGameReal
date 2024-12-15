@@ -11,6 +11,10 @@ export default class MainScene extends Phaser.Scene {
         this.sessionStartTime = Date.now();
         this.openedInventory = 0; 
     }
+    init(data) { 
+        this.username = data.username; 
+
+     }
 
    
 

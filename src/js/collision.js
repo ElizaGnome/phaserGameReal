@@ -73,21 +73,21 @@ function onPlayerEnd(scene){
     //send duration, send deaths, send egg counting
     //add the number of deaths to the db.
     //deaths +1 
-    const sessionEndTime = Data.now(); 
+    const sessionEndTime = Date.now(); 
     const sessionDuration = (sessionEndTime - scene.sessionStartTime) / 1000;
     console.log('Session duration:', sessionDuration, 'seconds');
 
     // update data by user 
     //change the url when pushed live
     //maybe we should also send the type of egg and valve?
-    fetch( 'https--something', 
+    fetch( 'https://localhost:5000/update-user-data', 
         {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                userId: storedUserId,
+                userId: scene.username,
                 deathCount: 1,
                 playCount: 1,
                 eggsCollected: scene.eggCounter,

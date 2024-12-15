@@ -17,6 +17,7 @@ export default class MenuScene extends Phaser.Scene {
          //lets create a user name
 
          const storedUsername = this.getCookie('username');
+       
 
 
 
