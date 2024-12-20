@@ -8,6 +8,7 @@ import {healthStats, setInventory} from '../ui/chickenInventoryWindow.js';
 export default class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' });
+        this.BUFFER_LIMIT = 15;   
     }
 
    
@@ -19,7 +20,16 @@ export default class MainScene extends Phaser.Scene {
         };
         this.inventory = setInventory();
         this.data.set('inventory', this.inventory);
-     
+        //lets create the x, y storage facility 
+        let positions = this.data.set('positions', []);
+        
+        
+        this.time.addEvent({ 
+             delay: 5000, 
+             callback: this.flushBuffer, 
+             callbackScope: this, 
+             loop: true
+        });
 
         
 
@@ -206,7 +216,31 @@ export default class MainScene extends Phaser.Scene {
             this.eggs.create(900,504, 'valveDrop').setName('valve');
             this.eggCounter =0; 
         }
+
+        let positionSet =  this.data.get('positions')
+        let lastPosition = positionSet[positionSet.length -1];
+
+        if(lastPosition[1]!= this.character.x
+             || lastPosition[2] != this.character.y){
+                positionSet.push( new Date(), this.character.x, this.character.y);
+        }
+
+
+
     }
+///need to fix this, 
+    flushDataToAPI(data) { 
+      
+        
+        const apiEndpoint = 'https://your-api-endpoint.com/positions'; 
+        fetch(apiEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+         .then(response => response.json())
+          .then(result => { console.log('Data successfully pushed to API:', result); })
+           .catch(error => { console.error('Error pushing data to API:', error); }); 
+
+
+           this.data.set('positions', []);
+        }
 
 
     toggleInventory() {

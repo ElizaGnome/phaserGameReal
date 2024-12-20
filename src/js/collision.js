@@ -76,7 +76,7 @@ export function damageTaken(scene,damageAmount){
 
     scene.health -=damageAmount;
     if(scene.health <=0){
-
+        scene.pushBuffer();
         scene.scene.start('DeathScene');
 
     }
@@ -235,6 +235,7 @@ export function setUpSteam(scene){
     scene.physics.add.overlap(scene.character, door, () => { 
         console.log('doorinteraction', door.active);
         if (door.active) { 
+             scene.pushBuffer();
              scene.scene.start('NextLocationScene'); 
             } 
         },
