@@ -10,6 +10,8 @@ export default class MainScene extends Phaser.Scene {
         super({ key: 'MainScene' });
         this.sessionStartTime = Date.now();
         this.openedInventory = 0; 
+        this.bufferLimit = 5;
+        this.buffer = [];
     }
     init(data) { 
         this.username = data.username; 
@@ -25,7 +27,8 @@ export default class MainScene extends Phaser.Scene {
         };
         this.inventory = setInventory();
         this.data.set('inventory', this.inventory);
-     
+         //lets create the x, y storage facility 
+         this.data.set('positions', []);     
 
         
 
@@ -72,6 +75,10 @@ export default class MainScene extends Phaser.Scene {
         this.character.setScale(1.5);
         this.character.setCollideWorldBounds(true);
         this.character.setBounce(0.2);
+
+
+        //set first position
+        this.addPosition( this.character.x, this.character.y);
 
         //make it so the camera follows the character
         this.cameras.main.startFollow(this.character,true,0.1,0.1);
@@ -212,9 +219,34 @@ export default class MainScene extends Phaser.Scene {
             this.eggs.create(900,504, 'valveDrop').setName('valve');
             this.eggCounter =0; 
         }
+
+
+        // position data :
+        let positionSet =  this.data.get('positions')
+        let lastPosition = positionSet[positionSet.length -1];
+
+        if(lastPosition[1]!= this.character.x
+             || lastPosition[2] != this.character.y){
+                thid.addPosition( this.character.x, this.character.y);
+        }
     }
 
+ addPosition(x, y) 
+ { 
+    const newPosition = [new Date(), x, y]; 
+    this.buffer.push(newPosition); 
 
+    let positionSet = this.data.get('positions'); 
+    positionSet.push(newPosition); 
+    this.data.set('positions', positionSet);
+
+
+
+    if (this.buffer.length >= this.bufferLimit) 
+        { this.sendToApi(); 
+            this.clearBuffer(); }
+
+    }
     toggleInventory() {
 
             this.openedInventory +-1;
@@ -222,6 +254,22 @@ export default class MainScene extends Phaser.Scene {
             this.scene.pause(); // Pause the main game scene
             this.scene.launch('JournalOverlayScene'); // Open the overlay
         }
+
+
+        //NEED TO CREATE THE TABLE. PROBABLY USERNAME - DaTETIME, X, AND Y.
+
+        sendToApi() { 
+            fetch('https://your-api-endpoint.com/positions', 
+            { method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify(this.buffer) }) 
+                 .then(response => response.json()) 
+                 .then(data => { console.log('Success:', data); }) 
+                 .catch((error) => { console.error('Error:', error); }); }
+         
+     clearBuffer() { 
+        this.buffer = []; 
+    } 
     
     
 }
