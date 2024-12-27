@@ -3,10 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Your Phaser Game</title>
+    <style> #game-container { 
+        width: 1024px; height: 600px; 
+        border: 1px solid #ccc; margin-bottom: 20px; 
+        } 
+        #d3-visualization { 
+            width: 800px; 
+            height: 600px;
+             border: 1px solid #ccc; 
+            } 
+            #search-box {
+                 margin-bottom: 10px; 
+                }
+
+    </style>
 </head>
 <body>
     <div id="game-container"></div>
+    <div id="d3-visualization"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="index.js"></script>
+    <script src="d3_scripts.js"></script>
 </body>
 </html>
