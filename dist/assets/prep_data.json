@@ -1,0 +1,6 @@
+[
+    {"userId": "user123", "playCount": 10, "eggsCollected": 20},
+    {"userId": "user456", "playCount": 15, "eggsCollected": 30},
+    {"userId": "user789", "playCount": 12, "eggsCollected": 25}
+
+]

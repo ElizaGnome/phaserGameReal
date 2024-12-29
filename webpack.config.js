@@ -28,12 +28,17 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
-        { from: 'src/assets', to: 'assets' }
-      ],
+        { from: 'src/assets', to: 'assets' }, 
+        { from: 'src/d3_scripts.js', to: 'd3_scripts.js'}
+      
+      ],  
     })
   ],
   module: {
     rules: [
+      { test: /\.css$/, 
+        use: ['style-loader', 'css-loader']
+      },
       {
         test: /\.png$/,
         type: 'asset/resource',

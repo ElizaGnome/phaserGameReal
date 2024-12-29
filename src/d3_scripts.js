@@ -1,56 +1,135 @@
-// src/d3-visualization.js
-// d3-script.js
-d3.json('src/assets/prep_data.json').then(function(data) {
-    console.log('data log', data);
-    if (error) throw error;
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('d3 script fires');
+    d3.json('assets/prep_data.json').then(function(data) {
+        console.log('data log', data);
 
-    const svg = d3.select("#d3-visualization").append("svg")
-        .attr("width", 800)
-        .attr("height", 600);
+        // Line Chart
+        const svg1 = d3.select("#d3-visualization")
+            .append("svg")
+            .attr("width", '100%')
+            .attr("height", 600)
+            .attr("viewBox", "0 0 1000 600")
+            .style("background-color", "rgba(240, 240, 240, 0.5)");  // Set background color
 
-    const margin = {top: 20, right: 30, bottom: 40, left: 40},
-        width = +svg.attr("width") - margin.left - margin.right,
-        height = +svg.attr("height") - margin.top - margin.bottom;
+        const margin = { top: 20, right: 30, bottom: 50, left: 50 },
+            width = 1000 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
 
-    const g = svg.append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+        const g1 = svg1.append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const x = d3.scaleLinear().range([0, width]),
-        y = d3.scaleLinear().range([height, 0]);
+        const x1 = d3.scaleLinear().range([0, width]),
+            y1 = d3.scaleLinear().range([height, 0]);
 
-    x.domain(d3.extent(data, d => d.playCount));
-    y.domain(d3.extent(data, d => d.eggsCollected));
+        x1.domain(d3.extent(data, d => d.playCount));
+        y1.domain(d3.extent(data, d => d.eggsCollected));
 
-    g.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(x))
-        .append("text")
-        .attr("fill", "#000")
-        .attr("x", width)
-        .attr("dy", "2.5em")
-        .attr("text-anchor", "end")
-        .text("Play Count");
+        // Add axes first
+        g1.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x1));
 
-    g.append("g")
-        .call(d3.axisLeft(y))
-        .append("text")
-        .attr("fill", "#000")
-        .attr("dy", "-2.5em")
-        .attr("text-anchor", "end")
-        .text("Eggs Collected");
+        g1.append("g")
+            .call(d3.axisLeft(y1));
 
-    const dots = g.selectAll(".dot")
-        .data(data)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("cx", d => x(d.playCount))
-        .attr("cy", d => y(d.eggsCollected))
-        .attr("r", 5);
+        // Tooltip
+        const tooltip1 = d3.select("#d3-visualization")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
-    document.getElementById('search-box').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        dots.attr("fill", d => d.userId.toLowerCase().includes(searchTerm) ? "red" : "black");
+        // Now add the dots to the same `g` element
+        g1.selectAll(".dot")
+            .data(data)
+            .enter().append("circle")
+            .attr("class", "dot")
+            .attr("cx", d => x1(d.playCount))
+            .attr("cy", d => y1(d.eggsCollected))
+            .attr("r", 5)
+            .attr("fill", "black")
+            .on("mouseover", function(event, d) {
+                tooltip1
+                    .style("opacity", 1)
+                    .html(`Play Count: ${d.playCount}<br>Eggs Collected: ${d.eggsCollected}`)
+                    .style("left", `${event.pageX + 10}px`)
+                    .style("top", `${event.pageY - 10}px`);
+            })
+            .on("mousemove", function(event, d) {
+                tooltip1
+                    .style("left", `${event.pageX + 10}px`)
+                    .style("top", `${event.pageY - 10}px`);
+            })
+            .on("mouseout", function() {
+                tooltip1
+                    .style("opacity", 0);
+            });
+
+        // League Table
+        const leagueData = data.sort((a, b) => b.wins - a.wins).slice(0, 3);
+        const leagueTable = d3.select("#league-table tbody");
+
+        leagueTable.selectAll("tr")
+            .data(leagueData)
+            .enter().append("tr")
+            .html((d, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${d.userId}</td>
+                    <td>${d.wins}</td>
+                </tr>
+            `);
+
+        const userRank = d3.select("#user-rank");
+
+        document.getElementById('search-box').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filteredData = data.filter(d => d.userId.toLowerCase().includes(searchTerm));
+
+            g1.selectAll(".dot")
+            .data(filteredData)
+            .join(
+                enter => enter.append("circle").attr("class", "dot"),
+                update => update,
+                exit => exit.remove()
+            )
+            .attr("cx", d => x1(d.playCount))
+            .attr("cy", d => y1(d.eggsCollected))
+            .attr("r", 5)
+            .attr("fill", "red")
+            .on("mouseover", function(event, d) {
+                tooltip1
+                    .style("opacity", 1)
+                    .html(`Play Count: ${d.playCount}<br>Eggs Collected: ${d.eggsCollected}`)
+                    .style("left", `${event.pageX + 10}px`)
+                    .style("top", `${event.pageY - 10}px`);
+            })
+            .on("mousemove", function(event, d) {
+                tooltip1
+                    .style("left", `${event.pageX + 10}px`)
+                    .style("top", `${event.pageY - 10}px`);
+            })
+            .on("mouseout", function() {
+                tooltip1
+                    .style("opacity", 0);
+            });
+
+
+            // Highlighting User's Row in the League Table
+            const user = data.find(d => d.userId.toLowerCase() === searchTerm);
+            const allRows = d3.selectAll("#league-table tbody tr");
+            allRows.classed("highlight", false); // Remove highlight from all rows
+
+            if (user) {
+                userRank.html(`User: ${user.userId}<br>Rank: ${data.indexOf(user) + 1}<br>Wins: ${user.wins}`);
+                
+                // Find and highlight the row with the user's data
+                allRows.filter(d => d.userId.toLowerCase() === searchTerm)
+                    .classed("highlight", true); // Add highlight to the matching row
+            } else {
+                userRank.html("User not found");
+            }
+        });
+    }).catch(function(error) {
+        console.error('Error loading or parsing JSON data:', error);
     });
-}).catch(function(error) {
-    console.error('Error loading or parsing data:', error);
 });
