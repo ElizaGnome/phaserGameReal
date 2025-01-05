@@ -69,14 +69,14 @@ function inventoryUpdator(itemName, scene){
 }
 //this is all the data 
 //counting sessions
-function onPlayerEnd(scene){
+function onPlayerEnd(scene, winVal){
     //send duration, send deaths, send egg counting
     //add the number of deaths to the db.
     //deaths +1 
     const sessionEndTime = Date.now(); 
     const sessionDuration = (sessionEndTime - scene.sessionStartTime) / 1000;
     console.log('Session duration:', sessionDuration, 'seconds');
-
+    const win= winVal ?? 0;
     // update data by user 
     //change the url when pushed live
     //maybe we should also send the type of egg and valve?
@@ -95,6 +95,7 @@ function onPlayerEnd(scene){
                 damageTaken: scene.health,
                 openedInventory: scene.openedInventory,
                 inventory: scene.inventory,
+                win: win
             })
         }
     )
@@ -118,7 +119,7 @@ export function damageTaken(scene,damageAmount){
 
     scene.health -=damageAmount;
     if(scene.health <=0){
-        onPlayerEnd(scene);
+        onPlayerEnd(scene,0);
 
         scene.scene.start('DeathScene');
 
@@ -282,7 +283,7 @@ export function setUpSteam(scene){
     scene.physics.add.overlap(scene.character, door, () => { 
         console.log('doorinteraction', door.active);
         if (door.active) { 
-            onPlayerEnd(scene);
+            onPlayerEnd(scene,1);
              scene.scene.start('NextLocationScene'); 
             } 
         },

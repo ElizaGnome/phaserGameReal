@@ -10,7 +10,7 @@ export default class MainScene extends Phaser.Scene {
         super({ key: 'MainScene' });
         this.sessionStartTime = Date.now();
         this.openedInventory = 0; 
-        this.bufferLimit = 5;
+        this.bufferLimit = 10;
         this.buffer = [];
     }
     init(data) { 
@@ -224,16 +224,17 @@ export default class MainScene extends Phaser.Scene {
         // position data :
         let positionSet =  this.data.get('positions')
         let lastPosition = positionSet[positionSet.length -1];
-
-        if(lastPosition[1]!= this.character.x
-             || lastPosition[2] != this.character.y){
-                thid.addPosition( this.character.x, this.character.y);
+        console.log('lastPosiition', lastPosition ,'and lets check charactyer', this.character.x, this.character.y)
+        if(lastPosition[2]!= this.character.x
+             || lastPosition[3] != this.character.y){
+                console.log('apparently its fine');
+                this.addPosition( this.character.x, this.character.y);
         }
     }
 
  addPosition(x, y) 
  { 
-    const newPosition = [new Date(), x, y]; 
+    const newPosition = [this.username, new Date(), x, y]; 
     this.buffer.push(newPosition); 
 
     let positionSet = this.data.get('positions'); 
@@ -258,19 +259,40 @@ export default class MainScene extends Phaser.Scene {
 
         //NEED TO CREATE THE TABLE. PROBABLY USERNAME - DaTETIME, X, AND Y.
 
-        sendToApi() { 
-            fetch('https://your-api-endpoint.com/positions', 
-            { method: 'POST', 
+       async sendToApi() { 
+
+            //map can be applied to each element in array then use item to say when item do x
+            const fetchPromises =this.buffer.map(item=>  {
+
+                const dataSend = {
+                    user_name: item[0],
+                    timestamp: item[1],
+                    x: item[2],
+                    y: item[3]
+
+                };
+           return fetch('https://localhost:5000/user-position', {
+                method: 'POST', 
                 headers: { 'Content-Type': 'application/json' },
-                 body: JSON.stringify(this.buffer) }) 
-                 .then(response => response.json()) 
-                 .then(data => { console.log('Success:', data); }) 
-                 .catch((error) => { console.error('Error:', error); }); }
-         
-     clearBuffer() { 
-        this.buffer = []; 
+                 body: JSON.stringify(dataSend)
+            })
+            .then(response => response.json()) 
+            .then(data => { console.log('Success:', data); }) 
+            .catch(error => { console.error('Error:', error); })
+       });
+        
+        await Promise.all(fetchPromises);
+        this.clearBuffer(); 
+        
     } 
+
+    clearBuffer(){
+        this.buffer = []; 
+
+
+
+
+    }
+ }  
     
-    
-}
 
