@@ -37,6 +37,7 @@ body, html {
 #visualization-league-container {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
     justify-content: space-between;
     padding: 60px 20px;
     background-color: #004d40;
@@ -50,7 +51,24 @@ body, html {
 
 .visualization-section h1 {
     color: #d4af37;
-  
+    margin-bottom: 10px; 
+}
+
+#visualization-section {
+    position: relative; /* Needed for absolute positioning within this container */
+}
+
+#refreshButton {
+    position: absolute; /* Positions relative to #visualization-section */
+    top: 80px; /* Adjust vertical placement */
+    right: 10px; /* Adjust horizontal placement */
+    padding: 10px 20px;
+    background-color: #d4af37;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 #d3-visualization {

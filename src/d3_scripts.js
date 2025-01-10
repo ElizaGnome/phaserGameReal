@@ -1,7 +1,31 @@
-document.addEventListener('DOMContentLoaded', function() {
+
+
+
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('d3 script fires');
-    d3.json('assets/prep_data.json').then(function(data) {
-        console.log('data log', data);
+
+    const gameData = sessionStorage.getItem("gameData");
+
+    if (!gameData) {
+        await fetchData();
+        gameData = JSON.parse(sessionStorage.getItem(gameData));
+        console.log('data loaded from api')
+    } else {
+        console.log('Data loaded from sessionStorage');
+       
+    }
+    updateVisualization(gameData);
+});
+export function updateVisualization(response) {
+        response = JSON.parse(response);
+        console.log('data log', response.allUserData);
+        const data = response.allUserData;
+
+
+        d3.select("#d3-visualization").select("svg").remove();
+
+
+        
 
         // Line Chart
         const svg1 = d3.select("#d3-visualization")
@@ -21,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const x1 = d3.scaleLinear().range([0, width]),
             y1 = d3.scaleLinear().range([height, 0]);
 
-        x1.domain(d3.extent(data, d => d.playCount));
-        y1.domain(d3.extent(data, d => d.eggsCollected));
+        x1.domain(d3.extent(data, d => d.total_plays));
+        y1.domain(d3.extent(data, d => d.total_eggs));
 
         // Add axes first
         g1.append("g")
@@ -43,14 +67,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .data(data)
             .enter().append("circle")
             .attr("class", "dot")
-            .attr("cx", d => x1(d.playCount))
-            .attr("cy", d => y1(d.eggsCollected))
+            .attr("cx", d => x1(d.total_plays))
+            .attr("cy", d => y1(d.total_eggs))
             .attr("r", 5)
             .attr("fill", "black")
             .on("mouseover", function(event, d) {
                 tooltip1
                     .style("opacity", 1)
-                    .html(`Play Count: ${d.playCount}<br>Eggs Collected: ${d.eggsCollected}`)
+                    .html(`Play Count: ${d.total_plays}<br>Eggs Collected: ${d.total_eggs}`)
                     .style("left", `${event.pageX + 10}px`)
                     .style("top", `${event.pageY - 10}px`);
             })
@@ -65,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
         // League Table
-        const leagueData = data.sort((a, b) => b.wins - a.wins).slice(0, 3);
+        const leagueData = data.sort((a, b) => b.win - a.win).slice(0, 3);
         const leagueTable = d3.select("#league-table tbody");
 
         leagueTable.selectAll("tr")
@@ -74,8 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .html((d, i) => `
                 <tr>
                     <td>${i + 1}</td>
-                    <td>${d.userId}</td>
-                    <td>${d.wins}</td>
+                    <td>${d.user_id}</td>
+                    <td>${d.win}</td>
                 </tr>
             `);
 
@@ -83,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('search-box').addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
-            const filteredData = data.filter(d => d.userId.toLowerCase().includes(searchTerm));
+            const filteredData = data.filter(d => d.user_id.toLowerCase().includes(searchTerm));
 
             g1.selectAll(".dot")
             .data(filteredData)
@@ -92,14 +116,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 update => update,
                 exit => exit.remove()
             )
-            .attr("cx", d => x1(d.playCount))
-            .attr("cy", d => y1(d.eggsCollected))
+            .attr("cx", d => x1(d.total_plays))
+            .attr("cy", d => y1(d.total_eggs))
             .attr("r", 5)
             .attr("fill", "red")
             .on("mouseover", function(event, d) {
                 tooltip1
                     .style("opacity", 1)
-                    .html(`Play Count: ${d.playCount}<br>Eggs Collected: ${d.eggsCollected}`)
+                    .html(`Play Count: ${d.total_plays}<br>Eggs Collected: ${d.total_eggs}`)
                     .style("left", `${event.pageX + 10}px`)
                     .style("top", `${event.pageY - 10}px`);
             })
@@ -115,21 +139,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
             // Highlighting User's Row in the League Table
-            const user = data.find(d => d.userId.toLowerCase() === searchTerm);
+            const user = data.find(d => d.user_id.toLowerCase() === searchTerm);
             const allRows = d3.selectAll("#league-table tbody tr");
             allRows.classed("highlight", false); // Remove highlight from all rows
 
             if (user) {
-                userRank.html(`User: ${user.userId}<br>Rank: ${data.indexOf(user) + 1}<br>Wins: ${user.wins}`);
+                userRank.html(`User: ${user.user_id}<br>Rank: ${data.indexOf(user) + 1}<br>Wins: ${user.win}`);
                 
                 // Find and highlight the row with the user's data
-                allRows.filter(d => d.userId.toLowerCase() === searchTerm)
+                allRows.filter(d => d.user_id.toLowerCase() === searchTerm)
                     .classed("highlight", true); // Add highlight to the matching row
             } else {
                 userRank.html("User not found");
             }
         });
-    }).catch(function(error) {
-        console.error('Error loading or parsing JSON data:', error);
-    });
-});
+    }
+

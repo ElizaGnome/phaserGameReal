@@ -16,7 +16,9 @@
     <section id="visualization-league-container">
         <div id="visualization-section">
             <input type="text" id="search-box" placeholder="Search by User ID">
+            
             <h2>Correlation Between Eggs and Plays</h2>
+            <button id="refreshButton">Refresh Data</button>
             <div id="d3-visualization"></div>
         </div>
         <div id="league-table-section">
@@ -55,12 +57,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script type="module" src="d3_scripts.js"></script>
+    <script type="module" src="api.js"></script>
     <script src="index.js"></script>
-    <script src="d3_scripts.js"></script>
-    <script>
-        document.getElementById('start-game-btn').addEventListener('click', function() {
-            document.getElementById('game-section').scrollIntoView({ behavior: 'smooth' });
-        });
-    </script>
+
 </body>
 </html>

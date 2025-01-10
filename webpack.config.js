@@ -29,7 +29,8 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: 'src/assets', to: 'assets' }, 
-        { from: 'src/d3_scripts.js', to: 'd3_scripts.js'}
+        { from: 'src/d3_scripts.js', to: 'd3_scripts.js'},
+        { from: 'src/api.js', to: 'api.js'}
       
       ],  
     })
