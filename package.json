@@ -23,6 +23,7 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
     "css-loader": "^7.1.2",
     "d3": "^7.9.0",
     "style-loader": "^4.0.0"
