@@ -78,6 +78,20 @@ body, html {
     margin-bottom: 20px;
 }
 
+#logistic-predictions-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+#logistic-predictions {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
 #league-table-section {
     background-color: #004d40;
     padding: 60px;
