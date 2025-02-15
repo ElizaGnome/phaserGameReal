@@ -98,20 +98,17 @@ export function updateVisualization(response, predictions) {
 
         //visual logisitc regression
         
-        const inputValues = data.map(user=>[
-            user.total_death,
-            user.total_eggs,
-            user.total_plays,
-            user.total_session_duration,
-            user.opened_inventory,
-            user.damage_taken
-        
-        ]);
+   
+        const userPredictions = data.map((user, index) => ({
+            username: user.user_id,
+            prediction: predictions[index]?.toFixed(2) || "N/A"
+        }))
 
-        const xScale = d3.scaleLinear() 
-            .domain([d3.min(inputValues, d => d[2]), d3.max(inputValues, d => d[2])])
-            .range([0, width]); 
-
+        const xScale = d3.scaleBand()
+            .domain(userPredictions.map(d => d.username)) 
+            .range([0, width])
+            .padding(0.1);
+         
         const yScale = d3.scaleLinear() 
             .domain([0, 1]) 
             .range([height, 0]); 
@@ -139,37 +136,34 @@ export function updateVisualization(response, predictions) {
     const colorScale = d3.scaleLinear()
         .domain([0, 1])
         .range(["steelblue", "red"]);
+
+
+         // Tooltip
+    const tooltip2 = d3.select("#logistic-predictions-section")
+         .append("div")
+         .attr("class", "tooltip")
+         .style("opacity", 0);
    
     g2.selectAll(".dot")
-        .data(inputValues)
+        .data(userPredictions)
         .enter().append("circle")
         .attr("class", "dot")
-        .attr("cx", d => xScale(d[2])) 
-        .attr("cy", (d, i) => yScale(predictions[i]))
+        .attr("cx", d => xScale(d.username) + xScale.bandwidth() / 2) 
+        .attr("cy", (d, i) => yScale(d.prediction))
         .attr("r", 5)
-        .style("fill", (d, i) => colorScale(predictions[i])) 
+        .style("fill", (d, i) => colorScale(d.prediction)) 
         .on("mouseover", function(event, d) {
-            tooltip1
+            tooltip2
                 .style("opacity", 1)
-                .html(`Play Count: ${d[2]}<br>Predicted Probability: ${predictions[i].toFixed(2)}`)
-                .style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY - 10}px`);
-        })
-        .on("mousemove", function(event) {
-            tooltip1
+                .html(`Username: ${d.username}<br>Predicted Win Probability: ${d.prediction}`)
                 .style("left", `${event.pageX + 10}px`)
                 .style("top", `${event.pageY - 10}px`);
         })
         .on("mouseout", function() {
-            tooltip1.style("opacity", 0);
+            tooltip2.style("opacity", 0);
         });
     
     // Add axis labels
-    g2.append("text")
-        .attr("x", (width - margin.left - margin.right) / 2)
-        .attr("y", height - margin.bottom)
-        .attr("text-anchor", "middle")
-        .text("Total Plays");
     
     g2.append("text")
         .attr("transform", "rotate(-90)")
@@ -199,6 +193,7 @@ export function updateVisualization(response, predictions) {
         document.getElementById('search-box').addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
             const filteredData = data.filter(d => d.user_id.toLowerCase().includes(searchTerm));
+            const filteredPredictions = userPredictions.filter(d => d.username.toLowerCase().includes(searchTerm));
 
             g1.selectAll(".dot")
             .data(filteredData)
@@ -228,7 +223,20 @@ export function updateVisualization(response, predictions) {
                     .style("opacity", 0);
             });
 
+            g2.selectAll(".dot")
+            .data(filteredPredictions)
+            .join(
+                enter => enter.append("circle").attr("class", "dot"),
+                update => update,
+                exit => exit.remove()
+            )
+            .attr("cx", d => xScale(d.username) + xScale.bandwidth() / 2) 
+            .attr("cy", d => yScale(d.prediction))
+            .attr("r", 5)
+            .style("fill", d => d.prediction === "N/A" ? "gray" : "steelblue");
 
+
+        
             // Highlighting User's Row in the League Table
             const user = data.find(d => d.user_id.toLowerCase() === searchTerm);
             const allRows = d3.selectAll("#league-table tbody tr");
