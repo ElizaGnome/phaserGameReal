@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  server:
+    build: .
+    ports:
+      - '5000:5000'
+    volumes: 
+      - ssl-certs:/ssl
+    environment:
+      SSL_KEY: /ssl/db-key.pem 
+      SSL_CERT: /ssl/db-cert.pem
+    depends_on:
+      - db
+
+  db:
+    image: 'postgres'
+    ports:
+      - '4321:5432'
+    environment:
+      POSTGRES_PASSWORD: 'mypassword123'
+      POSTGRES_USER: 'testUser'
+    volumes:
+      - data:/var/lib/postgresql/data
+      - "C:/Program Files/Git/usr/bin:/ssl"
+      - ./custom-postgresql.conf:/etc/postgresql/postgresql.conf 
+    
+volumes:
+  ssl-certs:
+    external: true
+  data:
